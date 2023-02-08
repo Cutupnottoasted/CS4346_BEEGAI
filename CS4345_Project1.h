@@ -6,10 +6,10 @@
 // FUNCTIONS
 //
 //
-// search_con (double var):
+// search_con (string var):
 // finds the matching variable in conclusion list
 // and the corresponding rule number ri
-// calls rule_to_clause (int ri):
+// calls rule_to_clause (int ruleNum):
 //
 // rule_to_clause (int ri):
 // Converts ri to clause variable list number, cvi using the formula:
@@ -52,5 +52,16 @@ class Patient
         int current_index; // the current index of the symptoms array
         void resize(int new_capacity); 
 }
+
+// Non-member functions
+// finds the matching variable and the corresponding rule number in the conclusion list
+// calls rule_to_clause (int ruleNum)
+void search_con (double conclusion);
+
+void rule_to_clause (int rule_num);
+
+void update_VL (int clause_var_index);
+
+void validate_rule_num (int rule_num, string conclusion)
 
 #endif
