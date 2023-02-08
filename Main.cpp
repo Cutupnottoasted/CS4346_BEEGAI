@@ -11,7 +11,7 @@ int main ()
                                 "Antidepressants", "Opiods", "Benzodiazepines",
                                 "Asprin", "Paracetamol", "Lead", "Iodine",
                                 "Carbon Monoxide"};
-    string clauseVarList[50] = {};
+    string clauseVarList[50] = {}; // move to header file
     // Instead of a global variable list, the patient contains symptoms. Pass the patient.symptoms[] instead.
     
 }
