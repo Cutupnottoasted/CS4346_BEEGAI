@@ -38,19 +38,19 @@ class Patient
         // CONSTRUCTOR/DECONSTRUCTOR
         static const int DEFAULT_CAPACITY = 3;
         Patient(int initial_capacity = DEFAULT_CAPACITY);
+        Patient(const Patient& src);
         ~Patient();
         int size() const; // returns number of symptoms
         bool isEmpty() const; // checks if there are symptoms
-        bool contains(string symptom)
-        void addSymptom(string symptom)
+        bool contains(string symptom) // checks if the patient has a certain symptom
+        void addSymptom(string symptom) // adds a Symptom into the symptom
         
     private:
-        std::string* symptom_array; // dynamic array containing variable list
-        std::string poison; // holds the name of the poison
-        int capacity; // capacity of symptom_array
+        std::string* symptoms; // dynamic array containing variable list
+        int capacity; // capacity of symptoms array
         int used; // current number of symptoms
+        int current_index; // the current index of the symptoms array
         void resize(int new_capacity); 
 }
-
 
 #endif
