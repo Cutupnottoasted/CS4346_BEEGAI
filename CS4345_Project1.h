@@ -6,13 +6,13 @@
 // global variables/arrays
 // 0 = No 1 = Yes\
 // order pair for conclusion nodes to know if looked at or not
-string conclusionList[12][1] = {"Poison", "Qualify", "Poison", 
+std::string conclusionList[12][1] = {"Poison", "Qualify", "Poison", 
                                 "Poison", "Poison", "Poison", 
                                 "Poison", "Poison", "Poison", 
-                                "Poison", "Poison", "Poison", }
-string variableList[10][1] = { {"Sick", "0"}, {"Irregular Breathing", "0"} {"Sweating", "0"}, {"Cognitive Problems", "0"}, {"Eye Problems", "0"},
-                                {"Muscle Pain", "0"}, {"Dizzyness", "0"}, {"Irritability", "0"}, {"Paranoia", "0"}, {"Sweating", "0"} }
-string ifThenList[12][5] = { {"Sick", "0", "0", "0", "No"}, // 1
+                                "Poison", "Poison", "Poison", };
+std::string variableList[10][2] = { {"Sick", "0"}, {"Irregular Breathing", "0"}, {"Sweating", "0"}, {"Cognitive Problems", "0"}, {"Eye Problems", "0"},
+                                {"Muscle Pain", "0"}, {"Dizzyness", "0"}, {"Irritability", "0"}, {"Paranoia", "0"}, {"Sweating", "0"} };
+std::string ifThenList[12][5] = { {"Sick", "0", "0", "0", "No"}, // 1
                             {"Sick", "0", "0", "0", "Yes"}, // 2
                             {"Irregular Breathing", "Sweating", "0", "0", "Asprin"}, // 3
                             {"Irregular Breathing", "Cognitive Problems", "Eye Problems", "0", "Benzodiazepines"}, // 4
@@ -23,8 +23,8 @@ string ifThenList[12][5] = { {"Sick", "0", "0", "0", "No"}, // 1
                             {"Irregular Breathing", "Muscle Pain", "Irritable", "0", "Carbon Monoxide"}, // 9
                             {"Irregular Breathing", "Muscle Pain", "Paranoia", "0", "Cannabis"}, // 10
                             {"Irregular Breathing", "Muscle Pain", "Eye Problems", "0", "Antidepressants"}, // 11
-                            {"Irregular Breathing", "Muscle Pain", "Sweating", "0", "Paracetamol"} } // 12
-string ifThenKey[12][4] = { { "0","","","" }, // 1 
+                            {"Irregular Breathing", "Muscle Pain", "Sweating", "0", "Paracetamol"} }; // 12
+std::string ifThenKey[12][4] = { { "0","","","" }, // 1 
                             { "1", "", "", ""}, // 2
                             { "1", "1", "", ""}, // 3
                             { "1", "1", "1", ""}, // 4
@@ -35,9 +35,53 @@ string ifThenKey[12][4] = { { "0","","","" }, // 1
                             { "0", "1", "0", ""}, // 9
                             { "0", "0", "1", ""}, // 10
                             { "0", "0", "1", ""}, // 11
-                            { "0", "0", "1", ""} } // 12
-string clauseVarList[50];
-string derivedGlobalConclusionList[10];
+                            { "0", "0", "1", ""} }; // 12
+std::string clauseVarList[50];
+std::string derivedGlobalConclusionList[10];
+
+class artificialInteligence
+{
+	/////////////////////////////////////
+	//TODO: fix return types on functions
+	/////////////////////////////////////
+	//just making it all public for now
+	public:
+	//backwards
+	void search_con(double variable)
+	{
+		rule_to_clause(variable);
+	}
+	void rule_to_clause(int variable)
+	{
+		int Ci = 0;
+		update_VL(Ci);
+		clause_to_rule(Ci);
+	}
+	
+	//forwards
+	void search_cvl(int variable)
+	{
+	}
+	void clause_to_rule(int variable)
+	{
+	}
+	
+	//shared
+	void update_VL(int variable)
+	{
+	}
+	bool validate_Ri(int variable)
+	{
+		return false;
+	}
+	bool validate_Ri(int variable, std::string conclusion)
+	{
+		return false;
+	}
+};
+
+
+
 /*
 class Patient 
 {
