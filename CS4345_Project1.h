@@ -4,7 +4,8 @@
 #define CS4345_PROJECT1_H
 #include <iostream>
 // global variables/arrays
-// 0 = No 1 = Yes
+// 0 = No 1 = Yes\
+// order pair for conclusion nodes to know if looked at or not
 string conclusionList[12][1] = {"Poison", "Qualify", "Poison", 
                                 "Poison", "Poison", "Poison", 
                                 "Poison", "Poison", "Poison", 
