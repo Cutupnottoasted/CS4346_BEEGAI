@@ -14,6 +14,10 @@ using namespace std;
 
 int main ()
 {
+	//example class
+	artificialInteligence* intel = new artificialInteligence();
+	int variable = 0;
+	intel->search_cvl(variable);
     // Instantiate the Clause Variable List
     // rule 1
     clauseVarList[0] = "Sick";
@@ -75,6 +79,6 @@ int main ()
     clauseVarList[45] = "Muscle Pain";
     clauseVarList[46] = "";
     clauseVarList[47] = "";
-
-    
+	
+	delete intel;
 }
