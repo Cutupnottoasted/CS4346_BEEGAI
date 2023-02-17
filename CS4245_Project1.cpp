@@ -4,6 +4,7 @@
 #define CS4345_PROJECT1_H
 #include <iostream>
 #include <string.h>
+#include <vector>
 using namespace std;
 // global variables/arrays
 // 0 = No 1 = Yes\
@@ -37,8 +38,8 @@ std::string ifThenKey[12][4] = { { "0","","","" }, // 1
                             { "0", "0", "1", ""}, // 10
                             { "0", "0", "1", ""}, // 11
                             { "0", "0", "1", ""} }; // 12
-std::string clauseVarList[50];
-std::string derivedGlobalConclusionList[10];
+string clauseVarList[50];
+vector<string> derivedGlobalConclusionList;     
 int dGCLSize=0;//number of items being used in 'derivedGlobalConclusionList'
 
 static const int RULE_SIZE = 12;
@@ -132,6 +133,7 @@ class artificialInteligence
   void processBackwards ( int variable_num )
   {
     bool start = true;
+    int ri, ci;
     // start a loop
     if (processFlag == false)
     {
@@ -141,10 +143,13 @@ class artificialInteligence
         // 1. search_con (variable) looks for the matching variable in the conclusion/rule list
         string current_conclusion = search_con ( variable_num );
         // instantiate the corresponding rule number
-        int ri = variable_num;
+        ri = variable_num;
         // 2. rule_to_claues( ri ) will convert the rule number into the clause number
-        int ci = rule_to_clause( ri );
-        // 3. update_VLBackwards( ci ) 
+        ci = rule_to_clause( ri );
+        // 3. update_VLBackwards( ci )
+        update_VLBackward(ci);
+
+
       }
     }
 
@@ -186,9 +191,39 @@ class artificialInteligence
   // then assign the ifThenList[rule_number_index][4] to the conclusion value and return;
   // if the key does not match the variable's truth value
   // then assign the conclusion value to "No" and continue;
+  // recieves ri which is non indexed
   // ************************************************************ NEED TO FINISH **************************************************************
-	void validate_RiBackward(int variable, std::string conclusion)
+	void validate_RiBackward( int ri )
 	{
+    int rule_number_index = ri - 1;
+    bool exitToken = false;
+    // checks vars in ifThenList to see if the key is satisfied
+    // 1. find the rule if vars
+    for (int i = 0; i < 4; i++)
+    {
+      if ( ifThenList[rule_number_index][i] == "-1")
+        break;
+      if ( ifThenList[rule_number_index][i] != "-1")
+      {
+        for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
+        {
+          if (ifThenList[rule_number_index][i] == variableList[j][0])
+          {
+            if (ifThenKey[rule_number_index][i] == variableList[j][1])
+            {
+              conclusionList[rule_number_index][1] = ifThenList[rule_number_index][IF_THEN_SIZE - 1];
+              derivedGlobalConclusionList.push_back(ifThenList[rule_number_index][IF_THEN_SIZE - 1]);
+              return;
+            }
+            else return;
+          }
+        }
+      }
+    }
+    // 2. check truth of that var in variableList and/or globalDerivedVariableList
+    // 3. check if truth matches key
+    // if matches, then assign ifThenKey[][5] to the conclusion variable return
+    // if not then continue;
 		return;
 	}
 
