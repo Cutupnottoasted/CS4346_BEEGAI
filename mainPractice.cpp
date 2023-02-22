@@ -1,13 +1,12 @@
 #include <iostream>
 #include <string.h>
-#include <vector>
+#include <queue>
 using namespace std;
 static const int RULE_SIZE = 9; // current number of rules; conclusionList, ifThenList, and ifThenKey share this size
 static const int VARIABLE_LIST_SIZE = 9; // current number of symptoms
 static const int IF_THEN_SIZE = 5; // total size of all if/then clause variables
 bool processFlag = false;
-vector<string> derivedGlobalConclusionList; // vector implemented as a queue; contains validated symptoms
-vector<string> derivedGlobalKeyList; // partner to global conclusion list
+queue<string> derivedGlobalConclusionList; // vector implemented as a queue; contains validated symptoms followed by truth value
 string clauseVarList[50]; // the clause variable list
 
 // The conclusionList[][]: Contains all the conclusion variables.
@@ -356,7 +355,7 @@ void update_VLBackwards(int ci)
     // if the global list is empty then skip straight to the variable list
     if ( derivedGlobalConclusionList.empty() )
     {
-      printf("Global list is empty");
+      cout << "Global list is empty" << endl;
       // iterate through all if clauses
       for ( int i = 0; i < 4; i++ )
       {
@@ -372,7 +371,8 @@ void update_VLBackwards(int ci)
         // A condition is given
         else if ( ifThenList[rule_number_index][i] != "-1" )
         {
-            cout << "A condition is given" << endl;
+          
+          cout << "A condition is given" << endl;
           conclusion = ifThenList[rule_number_index][i]; // reference the condition
           truth_value = ifThenKey[rule_number_index][i]; // reference the truth_value
           // iterate through entire variable list
@@ -383,9 +383,9 @@ void update_VLBackwards(int ci)
             if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
             {
                 cout << "A conclusion has been confirmed and pushed into vector" << endl;
-              derivedGlobalConclusionList.push_back (conclusion);
-              derivedGlobalKeyList.push_back (truth_value);
-              break; // break to look through if clauses
+              derivedGlobalConclusionList.push (conclusion);
+              derivedGlobalConclusionList.push (truth_value);
+              break; // break to look t_back hrough if clauses
             }
             // if conclusion match but truth does not
             if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
@@ -421,6 +421,7 @@ void update_VLBackwards(int ci)
         {
           conclusion = ifThenList[rule_number_index][i];
           truth_value = ifThenKey[rule_number_index][i];
+          
           //derivedGlobalConclusionList.begin();
           //derivedGlobalKeyList.begin();
           // go through the globals first
@@ -447,8 +448,8 @@ void update_VLBackwards(int ci)
             // if both the conclusion and the truth match
             if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
             {
-              derivedGlobalConclusionList.push_back (conclusion);
-              derivedGlobalKeyList.push_back (truth_value);
+              derivedGlobalConclusionList.push (conclusion);
+              derivedGlobalKeyList.push (truth_value);
               break; // break to look through if clauses
             }
             // if conclusion match but truth does not

@@ -101,30 +101,128 @@ int main ()
 }
 
 
-
-void validate_RIBackwards (int ri, string conclusion)
-{
+void validate_RIBackwards ( int ri, string conclusion )
+ {
     int rule_number_index = ri - 1;
     string truth_value;
-
-    if (derivedGlobalConclusionList.empty() )
+    
+    // if the global list is empty then skip straight to the variable list
+    if ( derivedGlobalConclusionList.empty() )
     {
-        for (int i = 0; i < 4; i++)
+      cout << "Global list is empty" << endl;
+      // iterate through all if clauses
+      for ( int i = 0; i < 4; i++ )
+      {
+        
+        // if -1 then no valid choices, which means test was passed
+        if ( ifThenList[rule_number_index][i] == "-1")
         {
-            if (ifThenList[rule_number_index][i] == "-1")
-                return;
-            
-            if (ifThenList[rule_number_index][i] != "-1")
+          // store the proper conclusion
+          cout << "The test has passed" << endl;
+          conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+          return; // exit function
+        }
+        // A condition is given
+        else if ( ifThenList[rule_number_index][i] != "-1" )
+        {
+          
+          cout << "A condition is given" << endl;
+          conclusion = ifThenList[rule_number_index][i]; // reference the condition
+          truth_value = ifThenKey[rule_number_index][i]; // reference the truth_value
+          // iterate through entire variable list
+          for ( int j = 0; j < VARIABLE_LIST_SIZE; j++ )
+          {
+            cout << "variable: " << j << endl;
+            // if both the conclusion and the truth match
+            if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
             {
-                conclusion = ifThenList[rule_number_index][i];
-                truth_value = ifThenKey[rule_number_index][i];
-
-                for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
-                {
-                    if (conclusion == variableList)
-                }
+                cout << "A conclusion has been confirmed and pushed into vector" << endl;
+              derivedGlobalConclusionList.push_back (conclusion);
+              derivedGlobalKeyList.push_back (truth_value);
+              break; // break to look through if clauses
+            }
+            // if conclusion match but truth does not
+            if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
+            {
+                cout << "The test has failed" << endl;
+              conclusionList[rule_number_index][1] = "No";
+              return; // leave the function
             }
 
+          }
+
         }
+
+      }
+      // if end of loop is reached, then test was passed
+      conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+      return; // exit function
     }
-}
+    // else if the global list is not empty
+    else if ( !derivedGlobalConclusionList.empty() )
+    {
+      // iterate through all if clauses
+      for ( int i = 0; i < 4; i++ )
+      {
+        // if -1 then no valid choices and test succesful
+        if ( ifThenList[rule_number_index][i] == "-1" )
+        {
+          conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+          return;
+        }
+        // a condition is given
+        if ( ifThenList[rule_number_index][i] != "-1")
+        {
+          conclusion = ifThenList[rule_number_index][i];
+          truth_value = ifThenKey[rule_number_index][i];
+
+          // global list is not empty; must check global list with conclusion and truth_value
+          string* list_pointer;
+          string* key_pointer;
+          
+          //derivedGlobalConclusionList.begin();
+          //derivedGlobalKeyList.begin();
+          // go through the globals first
+          // push_back adds element at the end
+          // -"conclusion"-> then -"conclusion"-"conclusion2"->
+          //       1                    1             2
+          for ( int offset = 0; offset < derivedGlobalKeyList.size(); offset++ )
+          {
+            // if conclusion variables and truth values match 
+            if ( conclusion == derivedGlobalConclusionList.front() 
+                && truth_value == derivedGlobalKeyList.front()  )
+                break; // find another clause
+            if ( conclusion == derivedGlobalConclusionList.front() 
+                && truth_value != derivedGlobalKeyList.front()  )
+            {
+              conclusionList[rule_number_index][1] = "No";
+              return; //exit the function
+            }
+
+          }
+          // at end of derrivedGlobal for loop then check variable list
+          for ( int j = 0; j < VARIABLE_LIST_SIZE; j++ )
+          {
+            // if both the conclusion and the truth match
+            if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
+            {
+              derivedGlobalConclusionList.push_back (conclusion);
+              derivedGlobalKeyList.push_back (truth_value);
+              break; // break to look through if clauses
+            }
+            // if conclusion match but truth does not
+            if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
+            {
+              conclusionList[rule_number_index][1] = "No";
+              return; // leave the function
+            }
+
+          }
+
+        }
+
+      }
+      // if end of loop is reached then test succesful
+      conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+      return; // exit function 
+    }
