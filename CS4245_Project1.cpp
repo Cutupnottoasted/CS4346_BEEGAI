@@ -26,18 +26,18 @@ std::string ifThenList[12][5] = { {"Sick", "-1", "-1", "-1", "No"}, // 1
                             {"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"}, // 10
                             {"Irregular Breathing", "Muscle Pain", "Eye Problems", "-1", "Antidepressants"}, // 11
                             {"Irregular Breathing", "Muscle Pain", "Sweating", "-1", "Paracetamol"} }; // 12
-std::string ifThenKey[12][4] = { { "0","","","" }, // 1 
-                            { "1", "", "", ""}, // 2
-                            { "1", "1", "", ""}, // 3
-                            { "1", "1", "1", ""}, // 4
-                            { "1", "1", "0", ""}, // 5
+std::string ifThenKey[12][4] = { { "0","-1","-1","-1" }, // 1 
+                            { "1", "-1", "-1", "-1"}, // 2
+                            { "1", "1", "-1", "-1"}, // 3
+                            { "1", "1", "1", "-1"}, // 4
+                            { "1", "1", "0", "-1"}, // 5
                             { "1", "0", "1", "1"}, // 6
                             { "1", "0", "1", "0"}, // 7
-                            { "0", "1", "1", ""}, // 8  
-                            { "0", "1", "0", ""}, // 9
-                            { "0", "0", "1", ""}, // 10
-                            { "0", "0", "1", ""}, // 11
-                            { "0", "0", "1", ""} }; // 12
+                            { "0", "1", "1", "-1"}, // 8  
+                            { "0", "1", "0", "-1"}, // 9
+                            { "0", "0", "1", "-1"}, // 10
+                            { "0", "0", "1", "-1"}, // 11
+                            { "0", "0", "1", "-1"} }; // 12
 string clauseVarList[50];
 vector<string> derivedGlobalConclusionList;     
 int dGCLSize=0;//number of items being used in 'derivedGlobalConclusionList'

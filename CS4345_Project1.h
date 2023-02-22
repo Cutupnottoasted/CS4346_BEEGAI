@@ -10,6 +10,7 @@ static const int VARIABLE_LIST_SIZE = 9; // current number of symptoms
 static const int IF_THEN_SIZE = 5; // total size of all if/then clause variables
 
 vector<string> derivedGlobalConclusionList; // vector implemented as a queue; contains validated symptoms
+vector<int> derivedGlobalKeyList; // partner to global conclusion list
 string clauseVarList[50]; // the clause variable list
 
 // The conclusionList[][]: Contains all the conclusion variables.
@@ -45,18 +46,18 @@ std::string ifThenList[12][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not si
 // The ifThenKey[][]: Used to confirm requirements for if clause.
 // Depending on ifThenKey matches the truth value of a symptom in the variableList
 // then the correspoinding conclusionList[][] is assigned its value
-std::string ifThenKey[12][4] = { { "0","","","" }, 
-                                    { "1", "", "", ""}, 
-                                    { "1", "1", "", ""}, 
-                                    { "1", "1", "1", ""}, 
-                                    { "1", "1", "0", ""}, 
+std::string ifThenKey[12][4] = { { "0","-1","-1","-1" }, 
+                                    { "1", "-1", "-1", "-1"}, 
+                                    { "1", "1", "-1", "-1"}, 
+                                    { "1", "1", "1", "-1"}, 
+                                    { "1", "1", "0", "-1"}, 
                                     { "1", "0", "1", "1"}, 
                                     { "1", "0", "1", "0"}, 
-                                    { "0", "1", "1", ""},   
-                                    { "0", "1", "0", ""}, 
-                                    { "0", "0", "1", ""}, 
-                                    { "0", "0", "1", ""}, 
-                                    { "0", "0", "1", ""} }; 
+                                    { "0", "1", "1", "-1"},   
+                                    { "0", "1", "0", "-1"}, 
+                                    { "0", "0", "1", "-1"}, 
+                                    { "0", "0", "1", "-1"}, 
+                                    { "0", "0", "1", "-1"} }; 
 bool processVariable = false,
      processConclusion = false;
 string current_conclusion;
@@ -84,8 +85,8 @@ class artificialIntelligence
     // checks only the current and 3 more
     while ( current_clause < clause_variable_index + 4 )
     {
-        // if "" then there are no more valid clause variables
-        if ( clauseVarList[current_clause] == "" )
+        // if "-1" then there are no more valid clause variables
+        if ( clauseVarList[current_clause] == "-1" )
             break;
 
         found = false; // set/reset
@@ -121,9 +122,13 @@ class artificialIntelligence
         }
     }
  }
-
+ // processBackwards(): This function begins the program and is recursively called.
+ // When the process begins when it first enters the while loop.
+ // processBackwards() is called in update_VLBackwards()
+ // The function is called to update the variable list or the ifs of the ifThenList 
  void processBackwards ( int variable_num )
  {
+    /*// if both flags are false then start loop
     if ( processVariable == false && processConclusion == false )
     {
         while (true)
@@ -135,8 +140,8 @@ class artificialIntelligence
             valdiate_RIBackwards ( ri, current_conclusion );
             variable_num++;
         }
-    }
-
+    }*/
+    
     if ( processVariable == true )
     {
       // when processVariable = true then variable_num = variable_list_index
@@ -196,66 +201,146 @@ class artificialIntelligence
     }
  }
 
-  // check if the ifThenList variables match the ifThenKey
-  // check by searching through the variable list and any instantiated global variables
-  // if the key matches the variable's truth value 
-  // then assign the ifThenList[rule_number_index][4] to the conclusion value and return;
-  // if the key does not match the variable's truth value
-  // then assign the conclusion value to "No" and continue;
-  // recieves ri which is non indexed
-  // ************************************************************ NEED TO FINISH **************************************************************
-	void validate_RiBackward( int ri, string conclusion )
-	{
-    int rule_number_index = ri - 1;
-    bool exitToken = false;
-    // checks vars in ifThenList to see if the key is satisfied
-    // 1. find the rule if vars
-    for (int i = 0; i < 4; i++)
+ // Checks validiation between ifThenList and ifThenKey
+ // if all qualifier match, then the conclusion variable is assigned
+ // else conclusion value is assigned "No" 
+ // Check through variable list and derived global variable list (initially empty)
+ // Any confirmed symptoms are placed into the derived global variable list
+ void validate_RIBackwards ( int ri, string conclusion )
+ {
+    int rule_number_index = ri - 1,
+        truth_value;
+
+    // if the global list is empty then skip straight to the variable list
+    if ( derivedGlobalConclusionList.empty() )
     {
-      if ( ifThenList[rule_number_index][i] == "-1")
-        break;
-      if ( ifThenList[rule_number_index][i] != "-1")
+      // iterate through all if clauses
+      for ( int i = 0; i < 4; i++ )
       {
-        for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
+        // if -1 then no valid choices, which means test was passed
+        if ( ifThenList[rule_number_index][i] == "-1" )
         {
-          if (ifThenList[rule_number_index][i] == variableList[j][0])
-          {
-            if (ifThenKey[rule_number_index][i] == variableList[j][1])
-            {
-              conclusionList[rule_number_index][1] = ifThenList[rule_number_index][IF_THEN_SIZE - 1];
-              derivedGlobalConclusionList.push_back(ifThenList[rule_number_index][IF_THEN_SIZE - 1]);
-              return;
-            }
-            else return;
-          }
+          // store the proper conclusion
+          conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+          return; // exit function
         }
+        // A condition is given
+        if ( ifThenList[rule_number_index][i] != "-1" )
+        {
+          conclusion = ifThenList[rule_number_index][i]; // reference the condition
+          truth_value = ifThenKey[rule_number_index][i]; // reference the truth_value
+          // iterate through entire variable list
+          for ( int j = 0; j < VARIABLE_LIST_SIZE; j++ )
+          {
+            // if both the conclusion and the truth match
+            if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
+            {
+              derivedGlobalConclusionList.push_back (conclusion);
+              derivedGlobalKeyList.push_back (truth_value);
+              break; // break to look through if clauses
+            }
+            // if conclusion match but truth does not
+            if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
+            {
+              conclusionList[rule_number_index][1] = "No";
+              return; // leave the function
+            }
+
+          }
+
+        }
+
       }
+      // if end of loop is reached, then test was passed
+      conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+      return; // exit function
     }
-    // 2. check truth of that var in variableList and/or globalDerivedVariableList
-    // 3. check if truth matches key
-    // if matches, then assign ifThenKey[][5] to the conclusion variable return
-    // if not then continue;
-		return;
-	}
+    // else if the global list is not empty
+    else if ( !derivedGlobalConclusionList.empty() )
+    {
+      // iterate through all if clauses
+      for ( int i = 0; i < 4; i++ )
+      {
+        // if -1 then no valid choices and test succesful
+        if ( ifThenList[rule_number_index][i] == "-1" )
+        {
+          conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+          return;
+        }
+        // a condition is given
+        if ( ifThenList[rule_number_index][i] != "-1")
+        {
+          conclusion = ifThenList[rule_number_index][i];
+          truth_value = ifThenKey[rule_number_index][i];
+          derivedGlobalConclusionList.begin();
+          derivedGlobalKeyList.begin();
+          // go through the globals first
+          // push_back adds element at the end
+          // -"conclusion"-> then -"conclusion"-"conclusion2"->
+          //       1                    1             2
+          for ( int offset = 0; offset < derivedGlobalKeyList.size(); offset++ )
+          {
+            // if conclusion variables and truth values match 
+            if ( conclusion == derivedGlobalConclusionList.front() + offset
+                && truth_value == derivedGlobalKeyList.front() + offset; )
+                break; // find another clause
+            if ( conclusion == derivedGlobalConclusionList.front() + offset
+                && truth_value != derivedGlobalKeyList.front() + offset )
+            {
+              conclusionList[rule_number_index][1] = "No";
+              return; //exit the function
+            }
+
+          }
+          // at end of derrivedGlobal for loop then check variable list
+          for ( int j = 0; j < VARIABLE_LIST_SIZE; j++ )
+          {
+            // if both the conclusion and the truth match
+            if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
+            {
+              derivedGlobalConclusionList.push_back (conclusion);
+              derivedGlobalKeyList.push_back (truth_value);
+              break; // break to look through if clauses
+            }
+            // if conclusion match but truth does not
+            if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
+            {
+              conclusionList[rule_number_index][1] = "No";
+              return; // leave the function
+            }
+
+          }
+
+        }
+
+      }
+      // if end of loop is reached then test succesful
+      conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+      return; // exit function 
+    }
+
+ }
+
+}
 
   
 	/****************************************************************** 
   *********************FORWARD CHAINING *****************************
   ******************************************************************/
   // this function will search for an entry in the CVI
-	int search_cvl(int variable)
+	void search_cvl(int variable)
 	{
 		//find Ci
 		int Ci = variable;//clause number
-		update_VLForward(Ci);
+		//update_VLForward(Ci);
 		
-    return clause_to_rule(Ci);
+    ////return clause_to_rule(Ci);
 	}
 
 	int clause_to_rule(int clauseNum)
 	{
     int rule = ((clauseNum/4)+1)*10;
-    validate_RiForward(rule);
+    //validate_RiForward(rule);
     return rule;
 	}
 
@@ -297,12 +382,13 @@ class artificialIntelligence
     if(variableList[variable][1] != "-1")
     {
       //add the conclusion of the rule to the global derived conclusions list as well as to the Global Conclusion Variable Queue and 
-      derivedGlobalConclusionList[dGCLSize] = variableList[variable][0];
-      dGCLSize++;
+      //derivedGlobalConclusionList[dGCLSize] = variableList[variable][0];
+      //dGCLSize++;
       return true;
     }
     return false;
-	}
+	};
+
 /*)
   void processFowards(variable)
   {
@@ -312,6 +398,6 @@ class artificialIntelligence
   }
 //shared
 */
-};
+
 
 #endif
