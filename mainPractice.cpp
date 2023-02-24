@@ -5,9 +5,9 @@ using namespace std;
 static const int RULE_SIZE = 9; // current number of rules; conclusionList, ifThenList, and ifThenKey share this size
 static const int VARIABLE_LIST_SIZE = 9; // current number of symptoms
 static const int IF_THEN_SIZE = 5; // total size of all if/then clause variables
-bool processFlag = false;
+
 stack<string> derivedGlobalConclusionStack; // vector implemented as a queue; contains validated symptoms followed by truth value
-stack<string> helper;
+stack<string> helper_out;
 
 string derivedGlobalConclusionQueue; // an array implemented as a queue
 string clauseVarList[50]; // the clause variable list
@@ -63,7 +63,8 @@ std::string ifThenKey[12][5] = { { "0","-1","-1","-1"}, // 1
                                     { "0", "0", "1", "-1"}, // 11
                                     { "0", "0", "1", "-1"} }; // 12
 bool processVariable = false,
-     processConclusion = false;
+     processConclusion = false,
+     diagnosis = false; // if true then loop done
 string current_conclusion;
 /********************************************************************************************* 
   ***********************************BACKWARDS CHAINING*****************************************
@@ -131,7 +132,7 @@ int main ()
     clauseVarList[7] = "-1";
     // rule 3
     clauseVarList[8] = "Irregular Breathing";
-    clauseVarList[9] = "-1";
+    clauseVarList[9] = "Sweating";
     clauseVarList[10] = "-1";
     clauseVarList[11] = "-1";
     // rule 4
@@ -180,7 +181,7 @@ int main ()
     clauseVarList[46] = "-1";
     clauseVarList[47] = "-1";
     int i = 1;
-    while (i < RULE_SIZE)
+    while (i < RULE_SIZE && !diagnosis )
     {
     test_search_con(i);
     int cvi = test_rule_to_clause(i);
@@ -202,8 +203,9 @@ void update_VLBackwards(int ci)
     {
       // if null then there are no more valid inputs
       // go to second loop
-      if ( clauseVarList[i] == "-1" )
+       if ( clauseVarList[i] == "-1" )
       {
+        cout << "Next rule" << endl;
         cout << "Clause Variable List has been exhausted\n";
         return;
       }
@@ -351,6 +353,7 @@ void update_VLBackwards(int ci)
  {
     int rule_number_index = ri - 1;
     string truth_value;
+    bool helped = false;
     
     // if the global list is empty then skip straight to the variable list
     if ( derivedGlobalConclusionStack.empty() )
@@ -366,6 +369,7 @@ void update_VLBackwards(int ci)
           // store the proper conclusion
           cout << "The test has passed" << endl;
           conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+
           return; // exit function
         }
         // A condition is given
@@ -383,9 +387,17 @@ void update_VLBackwards(int ci)
             // if both the conclusion and the truth match
             if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
             {
-                cout << "A conclusion has been confirmed and pushed into vector" << endl;
+              cout << "A conclusion has been confirmed and pushed into vector" << endl;
+              if (variableList[0][1] == ifThenKey[0][0])
+              {
+                cout << "This person is not sick" << endl;
+                diagnosis = true;
+                return;
+              }
               derivedGlobalConclusionStack.push (conclusion);
               derivedGlobalConclusionStack.push (truth_value);
+              // catches case if person not sick
+              
               break; // break to look t_back hrough if clauses
             }
             // if conclusion match but truth does not
@@ -416,6 +428,7 @@ void update_VLBackwards(int ci)
         if ( ifThenList[rule_number_index][i] == "-1" )
         {
           conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+          diagnosis = true;
           return;
         }
         // a condition is given
@@ -426,55 +439,67 @@ void update_VLBackwards(int ci)
           
           // if conclusion stack is not empty and helper is empty then
           // stack all conclusions into helper
-          while ( !derivedGlobalConclusionStack.empty() && helper.empty() )
+          if ( !derivedGlobalConclusionStack.empty() && !helped)
           {
-            helper.push(derivedGlobalConclusionStack.top()); 
-            derivedGlobalConclusionStack.pop(); 
+            if ( helper_out.empty() )
+              while ( !derivedGlobalConclusionStack.empty() )
+              {
+                helper_out.push (derivedGlobalConclusionStack.top());
+                derivedGlobalConclusionStack.pop();
+              }
+            helped = true;
           }
           // while helper is not empty look for matching conclusions/truth values
           // if satisfied then break loop to for another clause
-          while ( !helper.empty() )
+          while ( !helper_out.empty() )
           {
-            if (conclusion == helper.top()) // if not then next
+            if (conclusion == helper_out.top()) // if not then next
             {
-                derivedGlobalConclusionStack.push(helper.top());
-                helper.pop();
-                if (truth_value == helper.top()) // if true then look for another clause
+                derivedGlobalConclusionStack.push(helper_out.top());
+                helper_out.pop();
+                if (truth_value == helper_out.top()) // if true then look for another clause
                 {
-                    derivedGlobalConclusionStack.push(helper.top());
-                    helper.pop();
-                    break;
+                    derivedGlobalConclusionStack.push(helper_out.top());
+                    helper_out.pop();
+                    i++;
+                    conclusion = ifThenList[rule_number_index][i];
+                    truth_value = ifThenKey[rule_number_index][i];
+                    continue;
                 }
-                else if (truth_value != helper.top()) // if incorrect truth value
+                else if (truth_value != helper_out.top()) // if incorrect truth value
                 {
                     conclusionList[rule_number_index][1] = "No";
-                    while ( !helper.empty() )
+                    while ( !helper_out.empty() )
                     {
-                        derivedGlobalConclusionStack.push(helper.top());
-                        helper.pop();
+                        derivedGlobalConclusionStack.push(helper_out.top());
+                        helper_out.pop();
                     }
                     return; // exit function
                 }
             }
-            // if reaches here then current derived conclusion != conclusion
-            derivedGlobalConclusionStack.push(helper.top());
-            helper.pop();
-            derivedGlobalConclusionStack.push(helper.top());
-            helper.pop();
+            else if (conclusion != helper_out.top())
+            {
+              derivedGlobalConclusionStack.push(helper_out.top());
+              helper_out.pop();
+              derivedGlobalConclusionStack.push(helper_out.top());
+              helper_out.pop();
+            }
           }
           // if you reach this point then ifThenList still needs verifying
           // which means the rest of the clause variables have not been verified
-          if (!satisfied && helper.empty()) // if not satisfied and helper is empty
+          if (!satisfied && helper_out.empty()) // if not satisfied and helper is empty
           {
+
              for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
             {
                 cout << "variable: " << j << endl;
                 // if both the conclusion and the truth match
-                if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
+                 if (conclusion == variableList[j][0] && truth_value == variableList[j][1])
                 {
                     cout << "A conclusion has been confirmed and pushed into vector" << endl;
                     derivedGlobalConclusionStack.push (conclusion);
                     derivedGlobalConclusionStack.push (truth_value);
+                    j++;
                     break; // break to look t_back hrough if clauses
                 }
                 // if conclusion match but truth does not
@@ -488,7 +513,9 @@ void update_VLBackwards(int ci)
           }
          }
         }
+        // if here, then all 4 clauses were verified
         conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
+        diagnosis
         return; 
     }
  }
