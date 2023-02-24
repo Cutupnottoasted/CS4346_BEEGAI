@@ -2,7 +2,7 @@
 #include <string.h>
 #include <stack>
 using namespace std;
-static const int RULE_SIZE = 9; // current number of rules; conclusionList, ifThenList, and ifThenKey share this size
+static const int RULE_SIZE = 12; // current number of rules; conclusionList, ifThenList, and ifThenKey share this size
 static const int VARIABLE_LIST_SIZE = 9; // current number of symptoms
 static const int IF_THEN_SIZE = 5; // total size of all if/then clause variables
 
@@ -23,7 +23,7 @@ std::string conclusionList[12][2] = { {"Poison", "-1"}, {"Qualify", "-1"}, {"Poi
 // The order pair represents the symptom and if it is present
 // -1 = uninstantiated, 0 = false, 1 = true
 std::string variableList[9][2] = { {"Sick", "-1"}, {"Irregular Breathing", "-1"}, {"Cognitive Problems", "-1"}, {"Eye Problems", "-1"},
-                                {"Muscle Pain", "-1"}, {"Dizzyness", "-1"}, {"Irritability", "-1"}, {"Paranoia", "-1"}, {"Sweating", "-1"} };
+                                {"Muscle Pain", "-1"}, {"Dizzyness", "-1"}, {"Irritable", "-1"}, {"Paranoia", "-1"}, {"Sweating", "-1"} };
 
 // The ifThenList[][]: Represents the rule list.
 // Contains up to 4 symptoms per rule and conclusion assignment at the end. eg [2][4] = "Asprin"
@@ -115,6 +115,21 @@ string current_conclusion;
  {
     return false;
  }
+
+ bool double_check(int rule_number)
+ {
+    for (int i = 0; i < 4; i++)
+    {
+      for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
+      {
+        if(ifThenList[rule_number][i] == variableList[j][0] && ifThenKey[rule_number][i] == variableList[j][1])
+          continue;
+        else if (ifThenList[rule_number][i] == variableList[j][0] && ifThenKey[rule_number][i] != variableList[j][1])
+          return false;
+      }
+    }
+    return true;
+ }
 int main ()
 {
     int variable = 1;
@@ -158,27 +173,27 @@ int main ()
     // rule 8
     clauseVarList[28] = "Irregular Breathing";
     clauseVarList[29] = "Muscle Pain";
-    clauseVarList[30] = "-1";
+    clauseVarList[30] = "Irritable";
     clauseVarList[31] = "-1";
     // rule 9
     clauseVarList[32] = "Irregular Breathing";
     clauseVarList[33] = "Muscle Pain";
-    clauseVarList[34] = "-1";
+    clauseVarList[34] = "Irritable";
     clauseVarList[35] = "-1";
     // rule 10
     clauseVarList[36] = "Irregular Breathing";
     clauseVarList[37] = "Muscle Pain";
-    clauseVarList[38] = "-1";
+    clauseVarList[38] = "Paranoia";
     clauseVarList[39] = "-1";
     // rule 11
     clauseVarList[40] = "Irregular Breathing";
     clauseVarList[41] = "Muscle Pain";
-    clauseVarList[42] = "-1";
+    clauseVarList[42] = "Eye Problems";
     clauseVarList[43] = "-1";
     // rule 12
     clauseVarList[44] = "Irregular Breathing";
     clauseVarList[45] = "Muscle Pain";
-    clauseVarList[46] = "-1";
+    clauseVarList[46] = "Sweating";
     clauseVarList[47] = "-1";
     int i = 1;
     while (i < RULE_SIZE && !diagnosis )
@@ -188,7 +203,9 @@ int main ()
     test_update_VLBackwards(cvi);
     test_validate_RIBackwards(i);
     i++;
+    cout << i << endl;
     }
+    cout << conclusionList[i][0] << " " << conclusionList[i][1] << endl;
     return 0;
 }
 
@@ -259,7 +276,7 @@ void update_VLBackwards(int ci)
               break;
             }
             // else if the if variable matches and it has been instantiated then break
-            else break;
+            else if ( ifThenList[rule_number_index][i] == variableList[j][0] && variableList[j][1] != "-1"){break;}
           }
       }
   }
@@ -424,11 +441,12 @@ void update_VLBackwards(int ci)
       // iterate through all if clauses in ifThenList
       for ( int i = 0; i < 4; i++ )
       {
-        // if -1 then no valid choices and test succesful
+        // if -1 then no valid choices then double check if true
         if ( ifThenList[rule_number_index][i] == "-1" )
         {
+          
           conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
-          diagnosis = true;
+          diagnosis = double_check(rule_number_index);
           return;
         }
         // a condition is given
@@ -499,9 +517,17 @@ void update_VLBackwards(int ci)
                     cout << "A conclusion has been confirmed and pushed into vector" << endl;
                     derivedGlobalConclusionStack.push (conclusion);
                     derivedGlobalConclusionStack.push (truth_value);
-                    j++;
+                    conclusion = ifThenList[rule_number_index][i];
+                    truth_value = ifThenKey[rule_number_index][i];
                     break; // break to look t_back hrough if clauses
                 }
+                /*else if (conclusion == variableList[j][0] && variableList[j][1] == "-1")
+                {
+                    cout << "Symptom unvalidated" << endl;
+                    processVariable = true;
+                    processBackwards(j);
+                    break;
+                }*/
                 // if conclusion match but truth does not
                 else if (conclusion == variableList[j][0] && truth_value != variableList[j][1])
                 {
@@ -515,7 +541,7 @@ void update_VLBackwards(int ci)
         }
         // if here, then all 4 clauses were verified
         conclusionList[rule_number_index][1] = ifThenList[rule_number_index][4];
-        diagnosis
+        diagnosis = true;
         return; 
     }
  }
