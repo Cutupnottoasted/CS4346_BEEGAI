@@ -18,7 +18,15 @@ string clauseVarList[50]; // the clause variable list
 std::string conclusionList[12][2] = { {"Poison", "-1"}, {"Qualify", "-1"}, {"Poison", "-1"},
                                         {"Poison", "-1"}, {"Poison", "-1"}, {"Poison", "-1"},
                                         {"Poison", "-1"}, {"Poison", "-1"}, {"Poison", "-1"} };
-
+std::string antidote[22][2] = { {"Alchohol", "fomepizole"}, {"cannabis", "antagonist naloxone"}, {"stimulant", "Diazepam / lorazepam (ValiumTM / AtivanTM)"},
+                                        {"Antidepressants", "Sodium bicarbonate"}, {"Benzodiazepines", "Flumazenil (RomaziconTM)"}, {"Asprin", "Sodium bicarbonate"},
+                                        {"Paracetamol", "Intravenous acetylcysteine"}, {"Lead", "Calcium disodium EDTA (VersenateTM)"}, {"Iodine", "Stabilization and airway protection"},
+										{"Carbon Monoxide", "hyperbaric oxygen therapy"}, {"Inhalent Abuse", "Decomtamination and stablilization"}, {"Rat Poison", "Phytonadione / Vitamin K1 (AquaMEPHYTONTM / MephytonTM)"},
+										{"Mushrooms", "Pyridoxine / Vitamin B6"}, {"Spider Bite", "Antivenom"}, {"Herbicide", "Decomtamination and aggresive support therapy"},
+										{"Fumigants", "Decontamination of skin and eyes"}, {"Pain Killers", "Naloxone (NarcanTM)"}, {"Opioids", "Naloxone (NarcanTM)"},
+										{"Arsenic", "Dimercaprol / BAL"}, {"Calcium Channel Blockers", "Glucagon"}, {"Snake Bite", "Crotalinae polyvalent immune FAB (CroFabTM)"},
+										{"Iron Poisoning", "Deferoxamine mesylate (DesferalTM)"}
+										};
 // The variableList[][]: Contains all the symptoms and their truth value
 // The order pair represents the symptom and if it is present
 // -1 = uninstantiated, 0 = false, 1 = true
