@@ -17,7 +17,7 @@ string clauseVarList[50]; // the clause variable list
 // eg. [0][0], [0][1] == "Poison", "No" or [2][0], [2][1] == "Poison", "Asprin"
 std::string conclusionList[12][2] = { {"Poison", "-1"}, {"Qualify", "-1"}, {"Poison", "-1"},
                                         {"Poison", "-1"}, {"Poison", "-1"}, {"Poison", "-1"},
-                                        {"Poison", "-1"}, {"Poison", "-1"}, {"Poison", "-1"} };
+                                        {"Poison", "-1"}, {"Poison", "-1"}, {"Poison", "-1"}, };
 std::string antidote[22][2] = { {"Alchohol", "fomepizole"}, {"cannabis", "antagonist naloxone"}, {"stimulant", "Diazepam / lorazepam (ValiumTM / AtivanTM)"},
                                         {"Antidepressants", "Sodium bicarbonate"}, {"Benzodiazepines", "Flumazenil (RomaziconTM)"}, {"Asprin", "Sodium bicarbonate"},
                                         {"Paracetamol", "Intravenous acetylcysteine"}, {"Lead", "Calcium disodium EDTA (VersenateTM)"}, {"Iodine", "Stabilization and airway protection"},
@@ -30,50 +30,49 @@ std::string antidote[22][2] = { {"Alchohol", "fomepizole"}, {"cannabis", "antago
 // The variableList[][]: Contains all the symptoms and their truth value
 // The order pair represents the symptom and if it is present
 // -1 = uninstantiated, 0 = false, 1 = true
-std::string variableList[16][2] = { {"Sick", "-1"}, {"Irregular Breathing", "-1"}, {"Cognitive Problems", "-1"}, {"Eye Problems", "-1"},
+std::string variableList[23][2] = { {"Sick", "-1"}, {"Irregular Breathing", "-1"}, {"Cognitive Problems", "-1"}, {"Eye Problems", "-1"},                                    {"Muscle Soreness", "-1"},
                                 {"Muscle Pain", "-1"}, {"Dizzyness", "-1"}, {"Irritable", "-1"}, {"Paranoia", "-1"}, {"Sweating", "-1"} ,
 								{"Dialated Pupils", "-1"}, {"Numbness", "-1"}, {"Vomiting", "-1"}, {"Tremors", "-1"}, {"Drowsiness", "-1"},
-								{"Low Blood Pressure", "-1"}, {"Irritable Eyes", "-1"}
+								{"Low Blood Pressure", "-1"}, {"Irritable Eyes", "-1"}, {"Poison Induced Pain", "-1"}, 
+                {"Non Pain Inducing Poison", "-1"}, {"Patient Possibly Envenomed", "-1"},
+                {"Non Muscle Related", "-1"}, {"Possible Medical Drug Abuse", "-1"}, {"Likely Ingested Substance", "-1"}
 								};
 
 // The ifThenList[][]: Represents the rule list.
 // Contains up to 4 symptoms per rule and conclusion assignment at the end. eg [2][4] = "Asprin"
 // The conclusion assignment is only assigned when the ifThenKey's requirements are satsified  
 // Otherwise the conclusion is assigned "No"                                 
-std::string ifThenList[25][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not sick, then poison = no
+std::string ifThenList[30][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not sick, then poison = no
                                     {"Sick", "-1", "-1", "-1", "Yes"}, // if sick, then qualify = yes
-                                    {"Irregular Breathing", "Sweating", "-1", "-1", "Asprin"}, // 3
-                                    {"Irregular Breathing", "Cognitive Problems", "Eye Problems", "-1", "Benzodiazepines"}, // 4
-                                    {"Irregular Breathing", "Cognitive Problems", "Eye Problems", "-1", "Alcohol"}, // 5
-                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzyness", "Iodine"}, // 6
-                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzyness", "Sitmulant"}, // 7
-									
-									
-									{"Pinpoint Pupils", "Pale Complexion", "-1", "-1", "Opioids"}, // 7.1
-									{"Pinpoint Pupils", "Pale Complexion", "-1", "-1", "Painkillers"}, // 7.2
-									{"Pinpoint Pupils", "Hair Loss", "-1", "-1", "Rat Poison"}, // 7.3
-									
-									{"Cramping", "-1", "-1", "-1", "Spider Bite"}, // 7.4
-									{"Cramping", "Vomiting Blood", "-1", "-1", "Iron Poisoning"}, // 7.4
-									{"Cramping", "Vomiting Blood", "Irritable Eyes", "-1", "Herbicide"}, // 7.4
-									{"Cramping", "Vomiting Blood", "Irritable Eyes", "-1", "Snake Bite"}, // 7.4
-									
-                                    //{"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Lead"}, // 8
-                                    //{"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Carbon Monoxide"}, // 9 
-                                    //{"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"}, // 10
-                                    //{"Irregular Breathing", "Muscle Pain", "Eye Problems", "-1", "Antidepressants"}, // 11 
-                                    {"Irregular Breathing", "Muscle Pain", "Sweating", "-1", "Paracetamol"},  // 12
-									{"Irregular Breathing", "Muscle Pain", "Irritable", "Low Blood Pressure", "Calcium"},//13
-									{"Irregular Breathing", "Muscle Pain", "Irritable", "Low Blood Pressure", "lead"},//14
-									{"Irregular Breathing", "Muscle Pain", "Irritable", "Numbness", "Carbon Monoxide"},//15
-									{"Irregular Breathing", "Muscle Pain", "Irritable", "Numbness", "Arsenic"},//16
-									{"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"},//17
-									{"Irregular Breathing", "Muscle Pain", "Paranoia", "Dialated Pupils", "Anti Depressants"},//18
-									{"Sweating", "-1", "-1", "-1", "Paracetamol"},//19
-									{"Sweating", "Drowsiness", "Vomiting", "Tremors", "Fumigants"},//20
-									{"Sweating", "Drowsiness", "Vomiting", "Tremors", "Mushrooms"},//21
-									{"Sweating", "Drowsiness", "Vomiting", "-1", "Inhalent Abuse"}//22
-									};
+                                    {"Sick", "Irregular Breathing", "Sweating", "-1", "Asprin"}, // 3
+                                    {"Sick", "Irregular Breathing", "Cognitive Problems", "Eye Problems",  "Benzodiazepines"}, // 4
+                                    {"Sick", "Irregular Breathing", "Cognitive Problems", "Eye Problems", "Alcohol"}, // 5
+                                    {"Sick","Irregular Breathing", "Cognitive Problems", "Muscle Soreness", "Poison Induced Pain"}, // 6
+                                    {"Poison Induced Pain", "Dizzyness", "-1", "-1", "Iodine"}, //7
+                                    {"Poison Induced Pain", "Dizzyness", "-1", "-1", "Sitmulant"}, // 8
+                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Soreness", "-1", "Non-Pain Inducing Poison"}, //9
+									                  {"Non-Pain Inducing Poison", "Pinpoint Pupils", "Pale Complexion", "-1", "Opioids"}, // 10
+								                  	{"Non-Pain Inducing Poison","Pinpoint Pupils", "Pale Complexion", "-1", "Painkillers"}, // 11
+						                  			{"Non-Pain Inducing Poison", "Pinpoint Pupils", "Hair Loss", "-1", "Rat Poison"}, // 12
+                                    {"Non-Pain Inducing Poison", "Pinpoint Pupils", "Hair Loss", "-1", "Patient Possibly Envenomed"},//13
+							                   		{"Patient Possibly Envenomed", "Cramping", "-1", "-1", "Spider Bite"}, // 14
+							                   		{"Patient Possibly Envenomed","Cramping", "Vomiting Blood", "-1", "Iron Poisoning"}, // 15
+					                   				{ "Patient Possibly Envenomed","Cramping", "Vomiting Blood", "Irritable Eyes", "Herbicide"}, // 16
+						                  			{"Patient Possibly Envenomed","Cramping", "Vomiting Blood", "Irritable Eyes", "Snake Bite"}, // 17
+                                    {"Sick", "Irregular Breathing", "Muscle Pain", "-1", "Possible Medical Drug Abuse"}, //18
+						                  			{"Possible Medical Drug Abuse","Paranoia", "-1", "-1", "Cannabis"},//19
+                                    {"Possible Medical Drug Abuse", "Paranoia", "Dialated Pupils", "-1", "Anti Depressants"}, //20
+							                   		{"Possible Medical Drug Abuse", "Paranoia", "Dialated Pupils", "Sweating", "Paracetamol"}, //21
+							                  		{"Possible Medical Drug Abuse", "Paranoia", "Dialated Pupils", "Sweating", "Likely Ingested Substance"}, //22
+                                    {"Likely Ingested Substance", "Vomiting", "-1", "-1", "Inhalent Abuse"}, //23
+							                   		{"Likely Ingested Substance", "Vomiting", "Tremors", "-1", "Fumigants"}, //24
+								                  	{"Likely Ingested Substance", "Vomiting", "Tremors", "-1", "Mushrooms"}, //25
+                                    {"Sick", "Irregular Breathing", "Muscle Pain", "-1", "Non Muscle Related"}, //26
+					                   				{"Non Muscle Related", "Irritable", "Low Blood Pressure", "-1", "Calcium"}, //27
+					                   				{"Non Muscle Related", "Irritable", "Low Blood Pressure", "-1", "lead"},//28
+					                   				{"Non Muscle Related", "Irritable", "Numbness", "-1", "Carbon Monoxide"},//29
+						                  			{"Non Muscle Related", "Irritable", "Numbness", "-1", "Arsenic"},//30
+							               		};
 									
 
 // The ifThenKey[][]: Used to confirm requirements for if clause.
@@ -84,36 +83,37 @@ std::string ifThenList[25][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not si
 // if there are three.. just loop until you find the answer. what condition?
 // if the key confirm all but the last symptom in the ifThenList, iterate through entire ifThenList indexed at the last symptom
 // 
-std::string ifThenKey[25][5] = { { "0","-1","-1","-1"}, // 1
-                                    { "1", "-1", "-1", "-1"}, // 2 
-                                    { "1", "1", "-1", "-1"}, // 3
-                                    { "1", "1", "1", "-1"}, // 4
-                                    { "1", "1", "0", "-1"}, // 5
-                                    { "1", "0", "1", "1"}, // 6
-                                    { "1", "0", "1", "0"}, // 7
-									{"1", "1", "-1", "-1"}, // 7.1
-									{"1", "0", "-1", "-1"}, // 7.2
-									{"0", "1", "-1", "-1"}, // 7.3
+std::string ifThenKey[30][5] = {    { "0","-1","-1","-1"}, // 1
+                                    {"1", "-1", "-1", "-1"}, // 2 
+                                    {"1", "1", "1", "-1"}, // 3
+                                    {"1", "1", "1", "1"}, // 4
+                                    {"1", "1", "1", "0"}, // 5
+                                    {"1", "1", "0", "1"}, // 6
+                                    {"1", "1", "-1", "-1"}, // 7
+                                    {"1", "0", "-1", "-1"}, //8
+                                    {"1", "0", "0", "-1"}, // 9
+									                  {"1", "1", "1", "-1"}, // 10
+									                  {"1", "1", "0", "-1"}, // 11
+								                  	{"1", "0", "1", "-1"}, // 12
 									
-									{"1", "-1", "-1", "-1"}, // 7.4
-									{"0", "1", "-1", "-1"}, // 7.4
-									{"0", "0", "1", "-1"}, // 7.4
-									{"0", "0", "0", "-1"}, // 7.4
-                                    //{ "0", "1", "1", "-1"}, // 8   
-                                    //{ "0", "1", "0", "-1"}, // 9
-                                    //{ "0", "0", "1", "-1"}, // 10
-                                    //{ "0", "0", "1", "-1"}, // 11
-                                    { "0", "0", "1", "-1"}, // 12
-									{ "0", "1", "1", "1"},  // 13
-									{ "0", "1", "1", "0"},  // 14
-									{ "0", "1", "0", "0"},  // 15
-									{ "0", "1", "0", "1"},  // 16
-									{ "0", "0", "1", "-1"},  // 17
-									{ "0", "0", "0", "1"},  // 18
-									{ "1", "-1", "-1", "-1"},  // 19
-									{ "0", "1", "1", "1"},  // 20
-									{ "0", "1", "1", "0"},  // 21
-									{ "0", "1", "0", "-1"}  // 22
+						                  			{"1", "0", "0", "-1"}, // 13
+							                   		{"1", "1", "-1", "-1"}, // 14
+									{"1", "0", "1", "-1"}, // 15
+									{"1", "0", "0", "1"}, // 16
+                                    { "1", "0", "0", "0"}, // 17
+									{ "1", "0", "0", "-1"},  // 18
+									{ "1", "1", "-1", "-1"},  // 19
+									{ "1", "0", "1", "-1"},  // 20
+									{ "1", "0", "0", "1"},  // 21
+									{ "1", "0", "0", "0"},  // 22
+									{ "1", "0", "-1", "-1"},  // 23
+									{ "1", "1", "1", "-1"},  // 24
+									{ "1", "1", "0", "-1"},  // 25
+									{ "1", "0", "1", "-1"},  // 26
+									{ "1", "1", "1", "-1"},  // 27
+                  { "1", "1", "-1", "-1"}, //28
+                  { "1", "-1", "-1", "-1"}, //29
+                  { "1", "0", "1", "-1"} //30
 									};
 bool processVariable = false,
      processConclusion = false,
@@ -169,8 +169,15 @@ string current_conclusion;
     return false;
  }
 
+
+//5, 8, 12, 17, 21, 25
  bool double_check(int rule_number)
  {
+   cout << "RULE_NUMBER" << rule_number << endl;
+   if(rule_number == 5 || rule_number == 8 || rule_number == 12 || rule_number == 17 || rule_number == 21 || rule_number == 25)
+   {
+      return false;
+   }
     for (int i = 0; i < 4; i++)
     {
       for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
@@ -317,15 +324,15 @@ void update_VLBackwards(int ci)
       // iterate through the entire variable list and find the matching variable
       for (int j = 0; j < VARIABLE_LIST_SIZE; j++)
       {
-        cout << "Variable " << j << " is shown" << endl;
+        //cout << "Variable " << j << " is shown" << endl;
         // clause variable matches the variable in variableList and it is not instantiated
         if ( clauseVarList[i] == variableList[j][0] && variableList[j][1] == "-1" )
         {
           // sends the index of the variable list to process the variable
           processVariable = true;
-          cout << "in processBackwards variable..." << endl;
+          //cout << "in processBackwards variable..." << endl;
           processBackwards(j);
-          cout << "back into updateVL..." << endl;
+          //cout << "back into updateVL..." << endl;
           // break loop to find new clause variable
           break;
         }
@@ -632,5 +639,3 @@ void update_VLBackwards(int ci)
         return; 
     }
  }
-
-
