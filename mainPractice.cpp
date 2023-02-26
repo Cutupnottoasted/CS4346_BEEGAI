@@ -22,25 +22,51 @@ std::string conclusionList[12][2] = { {"Poison", "-1"}, {"Qualify", "-1"}, {"Poi
 // The variableList[][]: Contains all the symptoms and their truth value
 // The order pair represents the symptom and if it is present
 // -1 = uninstantiated, 0 = false, 1 = true
-std::string variableList[9][2] = { {"Sick", "-1"}, {"Irregular Breathing", "-1"}, {"Cognitive Problems", "-1"}, {"Eye Problems", "-1"},
-                                {"Muscle Pain", "-1"}, {"Dizzyness", "-1"}, {"Irritable", "-1"}, {"Paranoia", "-1"}, {"Sweating", "-1"} };
+std::string variableList[16][2] = { {"Sick", "-1"}, {"Irregular Breathing", "-1"}, {"Cognitive Problems", "-1"}, {"Eye Problems", "-1"},
+                                {"Muscle Pain", "-1"}, {"Dizzyness", "-1"}, {"Irritable", "-1"}, {"Paranoia", "-1"}, {"Sweating", "-1"} ,
+								{"Dialated Pupils", "-1"}, {"Numbness", "-1"}, {"Vomiting", "-1"}, {"Tremors", "-1"}, {"Drowsiness", "-1"},
+								{"Low Blood Pressure", "-1"}, {"Irritable Eyes", "-1"}
+								};
 
 // The ifThenList[][]: Represents the rule list.
 // Contains up to 4 symptoms per rule and conclusion assignment at the end. eg [2][4] = "Asprin"
 // The conclusion assignment is only assigned when the ifThenKey's requirements are satsified  
 // Otherwise the conclusion is assigned "No"                                 
-std::string ifThenList[12][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not sick, then poison = no
+std::string ifThenList[25][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not sick, then poison = no
                                     {"Sick", "-1", "-1", "-1", "Yes"}, // if sick, then qualify = yes
                                     {"Irregular Breathing", "Sweating", "-1", "-1", "Asprin"}, // 3
                                     {"Irregular Breathing", "Cognitive Problems", "Eye Problems", "-1", "Benzodiazepines"}, // 4
                                     {"Irregular Breathing", "Cognitive Problems", "Eye Problems", "-1", "Alcohol"}, // 5
-                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzy", "Iodine"}, // 6
-                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzy", "Sitmulant"}, // 7
-                                    {"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Lead"}, // 8
-                                    {"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Carbon Monoxide"}, // 9 
-                                    {"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"}, // 10
-                                    {"Irregular Breathing", "Muscle Pain", "Eye Problems", "-1", "Antidepressants"}, // 11 
-                                    {"Irregular Breathing", "Muscle Pain", "Sweating", "-1", "Paracetamol"} }; // 12
+                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzyness", "Iodine"}, // 6
+                                    {"Irregular Breathing", "Cognitive Problems", "Muscle Pain", "Dizzyness", "Sitmulant"}, // 7
+									
+									
+									{"Pinpoint Pupils", "Pale Complexion", "-1", "-1", "Opioids"}, // 7.1
+									{"Pinpoint Pupils", "Pale Complexion", "-1", "-1", "Painkillers"}, // 7.2
+									{"Pinpoint Pupils", "Hair Loss", "-1", "-1", "Rat Poison"}, // 7.3
+									
+									{"Cramping", "-1", "-1", "-1", "Spider Bite"}, // 7.4
+									{"Cramping", "Vomiting Blood", "-1", "-1", "Iron Poisoning"}, // 7.4
+									{"Cramping", "Vomiting Blood", "Irritable Eyes", "-1", "Herbicide"}, // 7.4
+									{"Cramping", "Vomiting Blood", "Irritable Eyes", "-1", "Snake Bite"}, // 7.4
+									
+                                    //{"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Lead"}, // 8
+                                    //{"Irregular Breathing", "Muscle Pain", "Irritable", "-1", "Carbon Monoxide"}, // 9 
+                                    //{"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"}, // 10
+                                    //{"Irregular Breathing", "Muscle Pain", "Eye Problems", "-1", "Antidepressants"}, // 11 
+                                    {"Irregular Breathing", "Muscle Pain", "Sweating", "-1", "Paracetamol"},  // 12
+									{"Irregular Breathing", "Muscle Pain", "Irritable", "Low Blood Pressure", "Calcium"},//13
+									{"Irregular Breathing", "Muscle Pain", "Irritable", "Low Blood Pressure", "lead"},//14
+									{"Irregular Breathing", "Muscle Pain", "Irritable", "Numbness", "Carbon Monoxide"},//15
+									{"Irregular Breathing", "Muscle Pain", "Irritable", "Numbness", "Arsenic"},//16
+									{"Irregular Breathing", "Muscle Pain", "Paranoia", "-1", "Cannabis"},//17
+									{"Irregular Breathing", "Muscle Pain", "Paranoia", "Dialated Pupils", "Anti Depressants"},//18
+									{"Sweating", "-1", "-1", "-1", "Paracetamol"},//19
+									{"Sweating", "Drowsiness", "Vomiting", "Tremors", "Fumigants"},//20
+									{"Sweating", "Drowsiness", "Vomiting", "Tremors", "Mushrooms"},//21
+									{"Sweating", "Drowsiness", "Vomiting", "-1", "Inhalent Abuse"}//22
+									};
+									
 
 // The ifThenKey[][]: Used to confirm requirements for if clause.
 // Depending on ifThenKey matches the truth value of a symptom in the variableList
@@ -50,18 +76,37 @@ std::string ifThenList[12][5] = { {"Sick", "-1", "-1", "-1", "No"}, // if not si
 // if there are three.. just loop until you find the answer. what condition?
 // if the key confirm all but the last symptom in the ifThenList, iterate through entire ifThenList indexed at the last symptom
 // 
-std::string ifThenKey[12][5] = { { "0","-1","-1","-1"}, // 1
+std::string ifThenKey[25][5] = { { "0","-1","-1","-1"}, // 1
                                     { "1", "-1", "-1", "-1"}, // 2 
                                     { "1", "1", "-1", "-1"}, // 3
                                     { "1", "1", "1", "-1"}, // 4
                                     { "1", "1", "0", "-1"}, // 5
                                     { "1", "0", "1", "1"}, // 6
                                     { "1", "0", "1", "0"}, // 7
-                                    { "0", "1", "1", "-1"}, // 8   
-                                    { "0", "1", "0", "-1"}, // 9
-                                    { "0", "0", "1", "-1"}, // 10
-                                    { "0", "0", "1", "-1"}, // 11
-                                    { "0", "0", "1", "-1"} }; // 12
+									{"1", "1", "-1", "-1"}, // 7.1
+									{"1", "0", "-1", "-1"}, // 7.2
+									{"0", "1", "-1", "-1"}, // 7.3
+									
+									{"1", "-1", "-1", "-1"}, // 7.4
+									{"0", "1", "-1", "-1"}, // 7.4
+									{"0", "0", "1", "-1"}, // 7.4
+									{"0", "0", "0", "-1"}, // 7.4
+                                    //{ "0", "1", "1", "-1"}, // 8   
+                                    //{ "0", "1", "0", "-1"}, // 9
+                                    //{ "0", "0", "1", "-1"}, // 10
+                                    //{ "0", "0", "1", "-1"}, // 11
+                                    { "0", "0", "1", "-1"}, // 12
+									{ "0", "1", "1", "1"},  // 13
+									{ "0", "1", "1", "0"},  // 14
+									{ "0", "1", "0", "0"},  // 15
+									{ "0", "1", "0", "1"},  // 16
+									{ "0", "0", "1", "-1"},  // 17
+									{ "0", "0", "0", "1"},  // 18
+									{ "1", "-1", "-1", "-1"},  // 19
+									{ "0", "1", "1", "1"},  // 20
+									{ "0", "1", "1", "0"},  // 21
+									{ "0", "1", "0", "-1"}  // 22
+									};
 bool processVariable = false,
      processConclusion = false,
      diagnosis = false; // if true then loop done
@@ -130,12 +175,42 @@ string current_conclusion;
     }
     return true;
  }
+void printClauseList()  
+{  
+    cout << "Printing clauseVarList elements:"<< endl;  
+    for (int i = 0; i < 50; i++)  
+    {  
+                   cout<<clauseVarList[i]<<"\n";    
+    }  
+}  
 int main ()
 {
     int variable = 1;
 	//intel->search_cvl(variable);
     // Instantiate the Clause Variable List
-    // rule 1
+	int count =0;
+	int objectNum = 0;
+    while(count<25)
+	{
+		clauseVarList[count]=ifThenList[objectNum][0];
+		clauseVarList[count+1]=ifThenList[objectNum][1];
+		clauseVarList[count+2]=ifThenList[objectNum][2];
+		clauseVarList[count+3]=ifThenList[objectNum][3];
+		count+=4;
+		objectNum++;
+	}
+	/*
+	for(int i=0;i<(22-4);i++)
+	{
+		clauseVarList[i]=ifThenList[i][0];
+		clauseVarList[i+1]=ifThenList[i][1];
+		clauseVarList[i+2]=ifThenList[i][2];
+		clauseVarList[i+3]=ifThenList[i][3];
+	}
+	*/
+	/*
+	printClauseList();
+	// rule 1
     clauseVarList[0] = "Sick";
     clauseVarList[1] = "-1";
     clauseVarList[2] = "-1";
@@ -145,7 +220,8 @@ int main ()
     clauseVarList[5] = "-1";
     clauseVarList[6] = "-1";
     clauseVarList[7] = "-1";
-    // rule 3
+	printClauseList();
+     // rule 3
     clauseVarList[8] = "Irregular Breathing";
     clauseVarList[9] = "Sweating";
     clauseVarList[10] = "-1";
@@ -194,7 +270,9 @@ int main ()
     clauseVarList[44] = "Irregular Breathing";
     clauseVarList[45] = "Muscle Pain";
     clauseVarList[46] = "Sweating";
-    clauseVarList[47] = "-1";
+    clauseVarList[47] = "-1";*/
+	
+	
     int i = 1;
     while (i < RULE_SIZE && !diagnosis )
     {
@@ -205,7 +283,8 @@ int main ()
     i++;
     cout << i << endl;
     }
-    cout << conclusionList[i][0] << " " << conclusionList[i][1] << endl;
+    cout << variableList[i][0] << " " << variableList[i][1] << endl;
+	cout << "The patient is poisoned with: " << ifThenList[i-2][4] << endl;
     return 0;
 }
 
