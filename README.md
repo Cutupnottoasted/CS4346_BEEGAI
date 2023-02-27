@@ -84,3 +84,13 @@ Access CS 4346 spring 23 course, then follow the following steps:
  The attachment(s) will be listed in the order they were entered.
   You may also click [Preview] to view your submission.
  Click [Submit] when you are done.
+
+
+//////////////////////////////////////////
+////////TO RUN AND USE THE PROGRAM////////
+//////////////////////////////////////////
+
+To compile the program, compile it using g++ main.cpp
+To start running the program, type ./a.out
+Answer any prompts the program asks, and it will give an answer.
+The following are all correct in their diagnosis and treatment outputs given their inputs.
