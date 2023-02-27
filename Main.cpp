@@ -1,5 +1,5 @@
 #include <iostream>
-#include <string.h>
+#include <string>
 #include <stack>
 using namespace std;
 static const int RULE_SIZE = 30; // current number of rules; conclusionList, ifThenList, and ifThenKey share this size
