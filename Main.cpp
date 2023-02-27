@@ -663,15 +663,6 @@ void update_VLBackwards(int ci)
 void processForwards(int variable)
 {
 	int rl = search_cvl(variable);
-	//cout << rl << endl;
-	//cout << clauseVarList[rl+4] << endl;
-	for(int numb=0;numb<22;numb++)
-	{
-		if(antidote[numb][0] == ifThenList[variable-2][4])
-		{
-			cout << "treatment: " << antidote[numb][1] << endl;
-		}
-	}
 }
   // this function will search for an entry in the CVI
 	//For each variable (Max 4) starting at Ci, check if variable is instantiated, if not promp user provide the values of variables and instantiate them
@@ -708,7 +699,14 @@ void processForwards(int variable)
 		//cout << "crule: " << clauseNum << endl;
 		int rule = ((clauseNum/4)+1)*10;
 		//cout << "c2rule: " << rule << endl;
-		//validate_RiForward(rule);
+		validate_RiForward(rule);
+		for(int numb=0;numb<22;numb++)
+		{
+			if(antidote[numb][0] == ifThenList[clauseNum-2][4])
+			{
+				cout << "treatment: " << antidote[numb][1] << endl;
+			}
+		}
 		return rule;
 	}
 	int search_cvl(int variable)
@@ -718,17 +716,18 @@ void processForwards(int variable)
 		update_VLForward(Ci);
 		return clause_to_rule(Ci);
 	}
-	/*
 	bool validate_RiForward(int variable)
 	{
 		//check if the values of the variable in the ‘if’ clauses of the rule, Ri, are satisfied with the values in the variable list.
 		if(variableList[variable][1] != "-1")
 		{
 			//add the conclusion of the rule to the global derived conclusions list as well as to the Global Conclusion Variable Queue and 
-			derivedGlobalConclusionList[dGCLSize] = variableList[variable][0];
-			dGCLSize++;
+			//derivedGlobalConclusionList[dGCLSize] = variableList[variable][0];
+			//dGCLSize++;
+			derivedGlobalConclusionStack.push(std::to_string(variable));
+			//cout << rl << endl;
+			//cout << clauseVarList[rl+4] << endl;
 			return true;
 		}
 		return false;
 	}
-	*/
